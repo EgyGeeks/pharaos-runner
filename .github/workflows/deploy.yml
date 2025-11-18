@@ -1,0 +1,59 @@
+name: Deploy Pharaos Runner
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: [self-hosted]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up environment
+        run: |
+          echo "Deploying Pharaos Runner Game"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref_name }}"
+
+      - name: Build Docker image
+        run: |
+          docker build -t pharaos-runner:latest .
+          docker tag pharaos-runner:latest pharaos-runner:${{ github.sha }}
+
+      - name: Stop old container
+        run: |
+          docker stop pharaos-runner || true
+          docker rm pharaos-runner || true
+
+      - name: Start new container
+        run: |
+          docker run -d \
+            --name pharaos-runner \
+            --restart unless-stopped \
+            --network traefik_public \
+            -l "traefik.enable=true" \
+            -l "traefik.http.routers.pharaos-runner.rule=Host(\`play.egygeeks.com\`)" \
+            -l "traefik.http.routers.pharaos-runner.entrypoints=websecure" \
+            -l "traefik.http.routers.pharaos-runner.tls.certresolver=letsencrypt" \
+            -l "traefik.http.services.pharaos-runner.loadbalancer.server.port=3000" \
+            --memory="512m" \
+            --cpus="0.5" \
+            pharaos-runner:latest
+
+      - name: Cleanup old images
+        run: |
+          docker image prune -f
+
+      - name: Deployment summary
+        run: |
+          echo "✅ Deployment completed successfully!"
+          echo "🎮 Game URL: https://play.egygeeks.com"
+          echo "🐳 Container: pharaos-runner"
+          echo "📦 Image: pharaos-runner:${{ github.sha }}"
+          echo ""
+          echo "Container status:"
+          docker ps --filter "name=pharaos-runner" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
