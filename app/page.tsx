@@ -174,8 +174,8 @@ export default function PharaohRunner() {
 
       // Progressive difficulty
       const currentScore = Math.floor(frameCount / 60); // Score in seconds
-      const baseSpeed = 2.5 + Math.min(currentScore * 0.08, 5); // Start at 2.5, max 7.5
-      const spawnInterval = Math.max(150 - currentScore * 2, 70); // Start at 150 frames, min 70
+      const baseSpeed = 3.5 + Math.min(currentScore * 0.1, 6); // Start at 3.5, max 9.5
+      const spawnInterval = Math.max(140 - currentScore * 2, 65); // Start at 140 frames, min 65
 
       // Spawn obstacles - random types
       if (frameCount - lastObstacleFrame > spawnInterval) {
