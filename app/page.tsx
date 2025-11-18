@@ -18,7 +18,7 @@ export default function PharaohRunner() {
   const velocityRef = useRef(0);
   const isDuckingRef = useRef(false);
   const obstaclesRef = useRef<{ x: number; type: ObstacleType }[]>([]);
-  const gameLoopRef = useRef<number>();
+  const gameLoopRef = useRef<number | undefined>(undefined);
   const gameStartedRef = useRef(false);
   const gameOverRef = useRef(false);
   const pausedRef = useRef(false);
