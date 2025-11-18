@@ -493,6 +493,7 @@ export default function PharaohRunner() {
         <div className="text-center mt-8 text-amber-300">
           <p className="font-bold">A game by EgyGeeks</p>
           <p className="text-sm text-amber-400">Open-source. Egyptian roots. Global impact.</p>
+          <p className="text-xs text-amber-500 mt-2">Run like the Pharaohs! 🏃‍♂️👑</p>
         </div>
       </div>
     </div>
